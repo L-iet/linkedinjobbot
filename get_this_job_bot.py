@@ -10,7 +10,7 @@ from web_scrape import get_results
 
 #bot name: GetThisJobBot, @get_this_job_bot
 
-updater = Updater("5107535874:AAHgj4VvDJb0TUMHYqaoPNomPxjZ3RQmb4g",
+updater = Updater("BOT_TOKEN",
 	use_context=True)
 
 
