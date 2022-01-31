@@ -5,10 +5,11 @@ from telegram.ext.commandhandler import CommandHandler
 from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 from web_scrape import get_results
+from datetime import datetime
 
 
 
-#bot name: LinkedInJobBot, @get_this_job_bot
+#bot name: GetThisJobBot, @get_this_job_bot
 
 updater = Updater("BOT_TOKEN",
 	use_context=True)
@@ -16,9 +17,9 @@ updater = Updater("BOT_TOKEN",
 
 def start(update: Update, context: CallbackContext):
 	update.message.reply_text(
-	"Hello. Type /search {job title}")
+	"Hello. Type /search {job title} without curly braces\nFor instance, /search frontend intern\nType /help for more info.")
 def _help(update: Update, context: CallbackContext):
-	update.message.reply_text("Type /search {job title} to search for LinkedIn job postings\nFor example, /search data science intern\nYou can add a results parameter to change the number of results; Maximum is 10\n/search data science intern results 6")
+	update.message.reply_text("Type /search {job title} to search for LinkedIn job postings\nFor example, /search data science intern\nYou can add a results parameter to change the number of results; Maximum is 10\n/search data science intern results 6\nYou can try searching again if I don't return results")
 
 def search(update: Update, context: CallbackContext):
 	params = update.message.text.split()[1:]
@@ -30,10 +31,16 @@ def search(update: Update, context: CallbackContext):
 	else:
 		query = ' '.join(params)
 		num_results = 5
+	print("Received query:",query)
 	ret_val = get_results(query,num_results)
 
+	if '{' in query or '}' in query:
+		update.message.reply_text("Preferably leave out the curly braces.\nFor instance, /search freshman internship")
 	update.message.reply_text(ret_val,parse_mode="HTML")
-	print("Processed query: %s" % query)
+	now = datetime.now()
+	current_time = now.strftime("%H:%M:%S")
+	print("Processed query: %s" % query, current_time)
+	print()
 
 def unknown_text(update: Update, context: CallbackContext):
 	update.message.reply_text(
