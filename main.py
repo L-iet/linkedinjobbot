@@ -24,7 +24,7 @@ def search(update: Update, context: CallbackContext):
 	params = update.message.text.split()[1:]
 	if 'results' in params:
 		r_ind = params.index('results')
-		num_results = params[r_ind + 1]
+		num_results = int(params[r_ind + 1])
 		query = params[:r_ind]
 		query = ' '.join(query)
 	else:
