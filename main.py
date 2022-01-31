@@ -8,7 +8,7 @@ from web_scrape import get_results
 
 
 
-#bot name: GetThisJobBot, @get_this_job_bot
+#bot name: LinkedInJobBot, @get_this_job_bot
 
 updater = Updater("BOT_TOKEN",
 	use_context=True)
@@ -16,9 +16,9 @@ updater = Updater("BOT_TOKEN",
 
 def start(update: Update, context: CallbackContext):
 	update.message.reply_text(
-	"Hello. Type /search {Position}")
+	"Hello. Type /search {job title}")
 def _help(update: Update, context: CallbackContext):
-	update.message.reply_text("Type /search {position} to search for LinkedIn job postings\nFor example, /search data science intern\nYou can add a results parameter to change the number of results; Maximum is 10\n/search data science intern results 6")
+	update.message.reply_text("Type /search {job title} to search for LinkedIn job postings\nFor example, /search data science intern\nYou can add a results parameter to change the number of results; Maximum is 10\n/search data science intern results 6")
 
 def search(update: Update, context: CallbackContext):
 	params = update.message.text.split()[1:]
@@ -32,11 +32,12 @@ def search(update: Update, context: CallbackContext):
 		num_results = 5
 	ret_val = get_results(query,num_results)
 
-	update.message.reply_text(ret_val)
+	update.message.reply_text(ret_val,parse_mode="HTML")
+	print("Processed query: %s" % query)
 
 def unknown_text(update: Update, context: CallbackContext):
 	update.message.reply_text(
-	"Sorry I can't recognize you , you said '%s'" % update.message.text)
+	"Sorry I don't understand you. You said '%s'" % update.message.text)
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('search', search))
@@ -46,8 +47,5 @@ updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 updater.dispatcher.add_handler(MessageHandler(
 	# Filters out unknown commands
 	Filters.command, unknown_text))
-  
-# Filters out unknown messages.
-updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 
 updater.start_polling()
